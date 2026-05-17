@@ -1,48 +1,389 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Томочка сегодня будет кушать</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#4f8f6f">
-<link rel="apple-touch-icon" href="icon.png">
-<style>
-body{
-font-family:Arial,sans-serif;
-background:#f5f7f4;
-margin:0;
-padding:20px;
-color:#1f2933
-}
-.container{
-max-width:900px;
-margin:auto
-}
-.card{
-background:white;
-padding:20px;
-border-radius:18px;
-box-shadow:0 4px 14px rgba(0,0,0,.08)
-}
-button{
-padding:12px 16px;
-border:none;
-border-radius:12px;
-background:#4f8f6f;
-color:white;
-font-weight:bold
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Меню на день</title>
+
+  <style>
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#f4f7f4;
+      color:#1f2933;
+      padding:20px;
+    }
+
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    h1{
+      margin-bottom:10px;
+    }
+
+    p{
+      color:#667085;
+      line-height:1.5;
+    }
+
+    .buttons{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:20px 0;
+    }
+
+    button,select{
+      padding:12px 16px;
+      border:none;
+      border-radius:12px;
+      font-size:15px;
+    }
+
+    button{
+      cursor:pointer;
+      font-weight:bold;
+    }
+
+    .primary{
+      background:#4f8f6f;
+      color:white;
+    }
+
+    .secondary{
+      background:#e7f5ec;
+      color:#397356;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:16px;
+    }
+
+    .card{
+      background:white;
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:5px 10px;
+      border-radius:999px;
+      background:#e7f5ec;
+      color:#397356;
+      font-size:12px;
+      margin-bottom:10px;
+      font-weight:bold;
+    }
+
+    .item{
+      background:#fafafa;
+      border:1px solid #ececec;
+      border-radius:10px;
+      padding:10px;
+      margin-bottom:8px;
+      line-height:1.4;
+    }
+
+    .dish-step{
+      background:#fff7ed;
+      border-radius:10px;
+      padding:10px;
+      margin-top:8px;
+    }
+
+    .section{
+      margin-top:35px;
+    }
+  </style>
 </head>
+
 <body>
+
 <div class="container">
-<h1>Томочка сегодня будет кушать</h1>
-<div class="card">
-<p>Архив готов для загрузки на GitHub Pages.</p>
-<p>После загрузки приложение можно установить на iPhone через Safari → Поделиться → На экран Домой.</p>
-<button onclick="alert('Приложение работает')">Проверить</button>
+
+  <h1>Меню на день</h1>
+
+  <p>
+    Приложение случайно составляет меню на день и создаёт быстрые блюда
+    из тех продуктов, которые выпали в меню.
+  </p>
+
+  <div class="buttons">
+    <button class="primary" onclick="generateMenu()">
+      Составить меню
+    </button>
+
+    <button class="secondary" onclick="copyMenu()">
+      Скопировать меню
+    </button>
+  </div>
+
+  <div id="menu" class="grid"></div>
+
+  <div class="section">
+
+    <h2>Быстрые блюда из выпавших продуктов</h2>
+
+    <div class="buttons">
+
+      <select id="dishFilter">
+        <option value="all">Все</option>
+        <option value="breakfast">Завтрак</option>
+        <option value="lunch">Обед</option>
+        <option value="snack">Перекус</option>
+        <option value="dinner">Ужин</option>
+      </select>
+
+      <button class="primary" onclick="generateDishes()">
+        Составить блюда
+      </button>
+
+    </div>
+
+    <div id="dishes" class="grid"></div>
+
+  </div>
+
 </div>
-</div>
+
+<script>
+
+const products = {
+
+  protein:[
+    ["Куриная грудка","110 г"],
+    ["Грудка индейки","120 г"],
+    ["Говядина постная","100 г"],
+    ["Треска","180 г"],
+    ["Семга","100 г"],
+    ["Креветки","140 г"],
+    ["Кальмар","140 г"],
+    ["Яйца","2 шт"],
+    ["Творог 5%","110 г"],
+    ["Тофу","150 г"]
+  ],
+
+  dairy:[
+    ["Кефир","200 мл"],
+    ["Йогурт","200 мл"],
+    ["Ряженка","200 мл"],
+    ["Сыр Эдам","30 г"],
+    ["Рикотта","50 г"]
+  ],
+
+  nuts:[
+    ["Миндаль","15 г"],
+    ["Грецкий орех","15 г"],
+    ["Кешью","15 г"]
+  ],
+
+  starch:[
+    ["Гречка","80 г"],
+    ["Рис нешлифованный","80 г"],
+    ["Булгур","80 г"],
+    ["Киноа","80 г"],
+    ["Картофель","100 г"],
+    ["Геркулес","80 г"],
+    ["Хлебцы","30 г"]
+  ],
+
+  fruit:[
+    ["Яблоко","150 г"],
+    ["Банан","60 г"],
+    ["Киви","100 г"],
+    ["Груша","130 г"],
+    ["Клубника","150 г"]
+  ],
+
+  fat:[
+    ["Авокадо","30 г"],
+    ["Оливки","35 г"],
+    ["Маслины","30 г"],
+    ["Оливковое масло","5 г"]
+  ],
+
+  vegetables:[
+    ["Огурцы","150 г"],
+    ["Брокколи","100 г"],
+    ["Шпинат","100 г"],
+    ["Руккола","100 г"],
+    ["Салат","100 г"]
+  ]
+};
+
+const breakfastFormulas = [
+  [["protein",2],["fat",2]],
+  [["protein",1],["starch",1],["dairy",1]],
+  [["protein",1],["fruit",1],["starch",1]]
+];
+
+const snackFormulas = [
+  [["dairy",1],["nuts",1]],
+  [["protein",1],["fruit",1]],
+  [["starch",1],["nuts",1]]
+];
+
+const lunchDinnerFormulas = [
+  [["protein",1],["starch",1],["fat",1]],
+  [["protein",2]],
+  [["protein",1],["starch",2]]
+];
+
+let currentMeals = {};
+
+function randomItem(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function buildMeal(formula){
+
+  let result=[];
+
+  formula.forEach(item=>{
+
+    const category=item[0];
+
+    const product=randomItem(products[category]);
+
+    result.push({
+      category,
+      name:product[0],
+      portion:product[1]
+    });
+
+  });
+
+  return result;
+}
+
+function renderMeal(title,meal){
+
+  return `
+    <div class="card">
+      <div class="badge">${title}</div>
+
+      ${meal.map(item=>`
+        <div class="item">
+          <strong>${item.name}</strong><br>
+          ${item.portion}
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function generateMenu(){
+
+  const breakfast = buildMeal(
+    randomItem(breakfastFormulas)
+  );
+
+  const lunchFormula = randomItem(lunchDinnerFormulas);
+
+  let dinnerFormula = randomItem(lunchDinnerFormulas);
+
+  while(
+    JSON.stringify(dinnerFormula) === JSON.stringify(lunchFormula)
+  ){
+    dinnerFormula = randomItem(lunchDinnerFormulas);
+  }
+
+  const lunch = buildMeal(lunchFormula);
+  const snack = buildMeal(randomItem(snackFormulas));
+  const dinner = buildMeal(dinnerFormula);
+
+  currentMeals = {
+    breakfast,
+    lunch,
+    snack,
+    dinner
+  };
+
+  document.getElementById("menu").innerHTML = `
+    ${renderMeal("Завтрак",breakfast)}
+    ${renderMeal("Обед",lunch)}
+    ${renderMeal("Перекус",snack)}
+    ${renderMeal("Ужин",dinner)}
+  `;
+
+  generateDishes();
+}
+
+function generateDish(title,meal){
+
+  return `
+    <div class="card">
+
+      <div class="badge">${title}</div>
+
+      <h3>Быстрое блюдо</h3>
+
+      ${meal.map(item=>`
+        <div class="item">
+          ${item.name} — ${item.portion}
+        </div>
+      `).join("")}
+
+      <div class="dish-step">
+        1. Подготовить продукты.<br>
+        2. Быстро приготовить белок или разогреть.<br>
+        3. Добавить гарнир или овощи.<br>
+        4. Собрать готовую тарелку.
+      </div>
+
+    </div>
+  `;
+}
+
+function generateDishes(){
+
+  if(!currentMeals.breakfast){
+    return;
+  }
+
+  const filter = document.getElementById("dishFilter").value;
+
+  let html="";
+
+  if(filter==="all" || filter==="breakfast"){
+    html += generateDish("Завтрак",currentMeals.breakfast);
+  }
+
+  if(filter==="all" || filter==="lunch"){
+    html += generateDish("Обед",currentMeals.lunch);
+  }
+
+  if(filter==="all" || filter==="snack"){
+    html += generateDish("Перекус",currentMeals.snack);
+  }
+
+  if(filter==="all" || filter==="dinner"){
+    html += generateDish("Ужин",currentMeals.dinner);
+  }
+
+  document.getElementById("dishes").innerHTML = html;
+}
+
+function copyMenu(){
+
+  const text = document.body.innerText;
+
+  navigator.clipboard.writeText(text);
+
+  alert("Меню скопировано");
+}
+
+</script>
+
 </body>
 </html>
