@@ -1,0 +1,8 @@
+{
+"name":"Томочка сегодня будет кушать",
+"short_name":"Томочка",
+"start_url":".",
+"display":"standalone",
+"background_color":"#f5f7f4",
+"theme_color":"#4f8f6f"
+}
