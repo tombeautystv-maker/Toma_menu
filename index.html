@@ -1,388 +1,556 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Меню на день</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Томочка сегодня будет кушать</title>
 
-  <style>
-    *{
-      box-sizing:border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body{
-      margin:0;
-      font-family:Arial,sans-serif;
-      background:#f4f7f4;
-      color:#1f2933;
-      padding:20px;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7f4;
+  color: #1f2933;
+  padding: 20px;
+}
 
-    .container{
-      max-width:1100px;
-      margin:0 auto;
-    }
+.container {
+  max-width: 1150px;
+  margin: 0 auto;
+}
 
-    h1{
-      margin-bottom:10px;
-    }
+h1, h2, h3 {
+  margin-top: 0;
+}
 
-    p{
-      color:#667085;
-      line-height:1.5;
-    }
+p {
+  color: #667085;
+  line-height: 1.5;
+}
 
-    .buttons{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin:20px 0;
-    }
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
 
-    button,select{
-      padding:12px 16px;
-      border:none;
-      border-radius:12px;
-      font-size:15px;
-    }
+button, select {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 15px;
+}
 
-    button{
-      cursor:pointer;
-      font-weight:bold;
-    }
+button {
+  cursor: pointer;
+}
 
-    .primary{
-      background:#4f8f6f;
-      color:white;
-    }
+.primary {
+  background: #4f8f6f;
+  color: #fff;
+}
 
-    .secondary{
-      background:#e7f5ec;
-      color:#397356;
-    }
+.secondary {
+  background: #e7f5ec;
+  color: #397356;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:16px;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
 
-    .card{
-      background:white;
-      border-radius:18px;
-      padding:18px;
-      box-shadow:0 4px 15px rgba(0,0,0,0.06);
-    }
+.card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
 
-    .badge{
-      display:inline-block;
-      padding:5px 10px;
-      border-radius:999px;
-      background:#e7f5ec;
-      color:#397356;
-      font-size:12px;
-      margin-bottom:10px;
-      font-weight:bold;
-    }
+.badge {
+  display: inline-block;
+  background: #e7f5ec;
+  color: #397356;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 
-    .item{
-      background:#fafafa;
-      border:1px solid #ececec;
-      border-radius:10px;
-      padding:10px;
-      margin-bottom:8px;
-      line-height:1.4;
-    }
+.item {
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 8px 0;
+  line-height: 1.4;
+}
 
-    .dish-step{
-      background:#fff7ed;
-      border-radius:10px;
-      padding:10px;
-      margin-top:8px;
-    }
+.recipe {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 10px;
+  line-height: 1.45;
+}
 
-    .section{
-      margin-top:35px;
-    }
-  </style>
+.section {
+  margin-top: 35px;
+}
+
+.small {
+  font-size: 13px;
+  color: #667085;
+}
+</style>
 </head>
 
 <body>
-
 <div class="container">
 
-  <h1>Меню на день</h1>
-
+  <h1>Томочка сегодня будет кушать</h1>
   <p>
-    Приложение случайно составляет меню на день и создаёт быстрые блюда
-    из тех продуктов, которые выпали в меню.
+    Приложение рандомно составляет меню на день и предлагает готовые блюда
+    только из тех продуктов, которые выпали в меню.
   </p>
 
-  <div class="buttons">
-    <button class="primary" onclick="generateMenu()">
-      Составить меню
-    </button>
-
-    <button class="secondary" onclick="copyMenu()">
-      Скопировать меню
-    </button>
+  <div class="controls">
+    <button class="primary" onclick="generateMenu()">Составить меню</button>
+    <button class="secondary" onclick="copyMenu()">Скопировать меню</button>
   </div>
 
+  <h2>Меню на день</h2>
   <div id="menu" class="grid"></div>
 
   <div class="section">
+    <h2>Готовое блюдо из выпавших продуктов</h2>
 
-    <h2>Быстрые блюда из выпавших продуктов</h2>
-
-    <div class="buttons">
-
-      <select id="dishFilter">
-        <option value="all">Все</option>
+    <div class="controls">
+      <select id="dishFilter" onchange="renderDishes()">
+        <option value="all">Все приемы пищи</option>
         <option value="breakfast">Завтрак</option>
         <option value="lunch">Обед</option>
         <option value="snack">Перекус</option>
         <option value="dinner">Ужин</option>
       </select>
-
-      <button class="primary" onclick="generateDishes()">
-        Составить блюда
-      </button>
-
     </div>
 
     <div id="dishes" class="grid"></div>
-
   </div>
 
 </div>
 
 <script>
-
 const products = {
-
-  protein:[
-    ["Куриная грудка","110 г"],
-    ["Грудка индейки","120 г"],
-    ["Говядина постная","100 г"],
-    ["Треска","180 г"],
-    ["Семга","100 г"],
-    ["Креветки","140 г"],
-    ["Кальмар","140 г"],
-    ["Яйца","2 шт"],
-    ["Творог 5%","110 г"],
-    ["Тофу","150 г"]
+  protein: [
+    ["Куриная грудка", "110 г"],
+    ["Индейка", "120 г"],
+    ["Говядина постная", "100 г"],
+    ["Треска", "180 г"],
+    ["Хек", "180 г"],
+    ["Семга", "100 г"],
+    ["Креветки", "140 г"],
+    ["Кальмар", "140 г"],
+    ["Яйца", "2 шт"],
+    ["Яичный белок", "200 г"],
+    ["Творог 5%", "110 г"],
+    ["Творог 2–3%", "150 г"],
+    ["Тофу", "150 г"]
   ],
 
-  dairy:[
-    ["Кефир","200 мл"],
-    ["Йогурт","200 мл"],
-    ["Ряженка","200 мл"],
-    ["Сыр Эдам","30 г"],
-    ["Рикотта","50 г"]
+  dairy: [
+    ["Кефир", "200 мл"],
+    ["Йогурт", "200 мл"],
+    ["Ряженка", "200 мл"],
+    ["Молоко", "200 мл"],
+    ["Сыр Эдам", "30 г"],
+    ["Рикотта", "50 г"],
+    ["Фета", "40 г"]
   ],
 
-  nuts:[
-    ["Миндаль","15 г"],
-    ["Грецкий орех","15 г"],
-    ["Кешью","15 г"]
+  nuts: [
+    ["Миндаль", "15 г"],
+    ["Грецкий орех", "15 г"],
+    ["Кешью", "15 г"],
+    ["Арахис", "15 г"]
   ],
 
-  starch:[
-    ["Гречка","80 г"],
-    ["Рис нешлифованный","80 г"],
-    ["Булгур","80 г"],
-    ["Киноа","80 г"],
-    ["Картофель","100 г"],
-    ["Геркулес","80 г"],
-    ["Хлебцы","30 г"]
+  starch: [
+    ["Гречка", "80 г"],
+    ["Рис нешлифованный", "80 г"],
+    ["Булгур", "80 г"],
+    ["Киноа", "80 г"],
+    ["Картофель", "100 г"],
+    ["Геркулес", "80 г"],
+    ["Хлебцы", "30 г"],
+    ["Макароны твёрдых сортов", "80 г"]
   ],
 
-  fruit:[
-    ["Яблоко","150 г"],
-    ["Банан","60 г"],
-    ["Киви","100 г"],
-    ["Груша","130 г"],
-    ["Клубника","150 г"]
+  fruit: [
+    ["Яблоко", "150 г"],
+    ["Банан", "60 г"],
+    ["Киви", "100 г"],
+    ["Груша", "130 г"],
+    ["Клубника", "150 г"],
+    ["Апельсин", "150 г"],
+    ["Грейпфрут", "150 г"]
   ],
 
-  fat:[
-    ["Авокадо","30 г"],
-    ["Оливки","35 г"],
-    ["Маслины","30 г"],
-    ["Оливковое масло","5 г"]
+  fat: [
+    ["Авокадо", "30 г"],
+    ["Оливки", "35 г"],
+    ["Маслины", "30 г"],
+    ["Растительное масло", "5 г"],
+    ["Сметана 15%", "32 г"]
   ],
 
-  vegetables:[
-    ["Огурцы","150 г"],
-    ["Брокколи","100 г"],
-    ["Шпинат","100 г"],
-    ["Руккола","100 г"],
-    ["Салат","100 г"]
+  vegetables: [
+    ["Огурцы", "150 г"],
+    ["Брокколи", "100 г"],
+    ["Шпинат", "100 г"],
+    ["Руккола", "100 г"],
+    ["Салат", "100 г"],
+    ["Пекинская капуста", "150 г"],
+    ["Грибы шампиньоны", "100 г"]
   ]
 };
 
-const breakfastFormulas = [
-  [["protein",2],["fat",2]],
-  [["protein",1],["starch",1],["dairy",1]],
-  [["protein",1],["fruit",1],["starch",1]]
-];
+const categoryName = {
+  protein: "Протеин",
+  dairy: "Молочные",
+  nuts: "Орехи",
+  starch: "Крахмалы",
+  fruit: "Фрукты",
+  fat: "Жиры",
+  vegetables: "Овощи"
+};
 
-const snackFormulas = [
-  [["dairy",1],["nuts",1]],
-  [["protein",1],["fruit",1]],
-  [["starch",1],["nuts",1]]
-];
+const formulas = {
+  breakfast: [
+    [["protein", 2], ["fat", 2]],
+    [["protein", 1], ["starch", 1.5], ["dairy", 1]],
+    [["protein", 1.5], ["starch", 1], ["fruit", 1]],
+    [["protein", 2], ["starch", 1]],
+    [["protein", 2], ["fruit", 1], ["fat", 1]],
+    [["protein", 1.5], ["dairy", 1], ["nuts", 1]],
+    [["protein", 1.5], ["fruit", 1], ["dairy", 1]],
+    [["starch", 2], ["fat", 1], ["protein", 1]]
+  ],
 
-const lunchDinnerFormulas = [
-  [["protein",1],["starch",1],["fat",1]],
-  [["protein",2]],
-  [["protein",1],["starch",2]]
-];
+  snack: [
+    [["dairy", 1], ["nuts", 0.5]],
+    [["dairy", 0.5], ["starch", 1]],
+    [["protein", 0.5], ["fruit", 1]],
+    [["fat", 1], ["protein", 0.5]],
+    [["protein", 1]],
+    [["starch", 1], ["nuts", 0.5]],
+    [["starch", 1.5]]
+  ],
 
-let currentMeals = {};
+  lunchDinner: [
+    [["protein", 1], ["starch", 1], ["fat", 1]],
+    [["protein", 1.5], ["starch", 1]],
+    [["protein", 1], ["dairy", 0.5], ["starch", 1]],
+    [["protein", 2]],
+    [["protein", 1], ["starch", 2]],
+    [["fat", 1.5], ["protein", 1.5]],
+    [["starch", 1], ["dairy", 2]],
+    [["protein", 1], ["starch", 1], ["fruit", 1, "lunchOnly"]]
+  ]
+};
 
-function randomItem(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
+let current = {};
+
+function rnd(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function buildMeal(formula){
+function sameFormula(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
 
-  let result=[];
+function makeMeal(formula, mealType) {
+  let meal = [];
 
-  formula.forEach(item=>{
+  formula.forEach(part => {
+    const cat = part[0];
+    const count = part[1];
 
-    const category=item[0];
+    if (mealType === "dinner" && cat === "fruit") {
+      const vegetable = rnd(products.vegetables);
+      meal.push({
+        cat: "vegetables",
+        name: vegetable[0],
+        portion: vegetable[1],
+        count: 1,
+        replacedFruit: true
+      });
+      return;
+    }
 
-    const product=randomItem(products[category]);
+    const product = rnd(products[cat]);
 
-    result.push({
-      category,
-      name:product[0],
-      portion:product[1]
+    meal.push({
+      cat,
+      name: product[0],
+      portion: product[1],
+      count
     });
-
   });
 
-  return result;
+  if ((mealType === "lunch" || mealType === "dinner") && !meal.some(i => i.cat === "vegetables")) {
+    const vegetable = rnd(products.vegetables);
+    meal.push({
+      cat: "vegetables",
+      name: vegetable[0],
+      portion: vegetable[1],
+      count: 1,
+      extra: true
+    });
+  }
+
+  return meal;
 }
 
-function renderMeal(title,meal){
+function generateMenu() {
+  const breakfastFormula = rnd(formulas.breakfast);
+  const snackFormula = rnd(formulas.snack);
 
-  return `
-    <div class="card">
-      <div class="badge">${title}</div>
+  const lunchFormula = rnd(formulas.lunchDinner);
 
-      ${meal.map(item=>`
-        <div class="item">
-          <strong>${item.name}</strong><br>
-          ${item.portion}
-        </div>
-      `).join("")}
-    </div>
-  `;
-}
-
-function generateMenu(){
-
-  const breakfast = buildMeal(
-    randomItem(breakfastFormulas)
+  let dinnerFormula = rnd(
+    formulas.lunchDinner.filter(f =>
+      !f.some(part => part[0] === "fruit")
+    )
   );
 
-  const lunchFormula = randomItem(lunchDinnerFormulas);
-
-  let dinnerFormula = randomItem(lunchDinnerFormulas);
-
-  while(
-    JSON.stringify(dinnerFormula) === JSON.stringify(lunchFormula)
-  ){
-    dinnerFormula = randomItem(lunchDinnerFormulas);
+  while (sameFormula(lunchFormula, dinnerFormula)) {
+    dinnerFormula = rnd(
+      formulas.lunchDinner.filter(f =>
+        !f.some(part => part[0] === "fruit")
+      )
+    );
   }
 
-  const lunch = buildMeal(lunchFormula);
-  const snack = buildMeal(randomItem(snackFormulas));
-  const dinner = buildMeal(dinnerFormula);
-
-  currentMeals = {
-    breakfast,
-    lunch,
-    snack,
-    dinner
+  current = {
+    breakfast: makeMeal(breakfastFormula, "breakfast"),
+    lunch: makeMeal(lunchFormula, "lunch"),
+    snack: makeMeal(snackFormula, "snack"),
+    dinner: makeMeal(dinnerFormula, "dinner")
   };
 
-  document.getElementById("menu").innerHTML = `
-    ${renderMeal("Завтрак",breakfast)}
-    ${renderMeal("Обед",lunch)}
-    ${renderMeal("Перекус",snack)}
-    ${renderMeal("Ужин",dinner)}
-  `;
-
-  generateDishes();
+  renderMenu();
+  renderDishes();
 }
 
-function generateDish(title,meal){
+function renderMenu() {
+  const names = {
+    breakfast: "Завтрак",
+    lunch: "Обед",
+    snack: "Перекус",
+    dinner: "Ужин"
+  };
 
-  return `
-    <div class="card">
-
-      <div class="badge">${title}</div>
-
-      <h3>Быстрое блюдо</h3>
-
-      ${meal.map(item=>`
-        <div class="item">
-          ${item.name} — ${item.portion}
-        </div>
-      `).join("")}
-
-      <div class="dish-step">
-        1. Подготовить продукты.<br>
-        2. Быстро приготовить белок или разогреть.<br>
-        3. Добавить гарнир или овощи.<br>
-        4. Собрать готовую тарелку.
+  document.getElementById("menu").innerHTML = Object.keys(current).map(key => {
+    return `
+      <div class="card">
+        <div class="badge">${names[key]}</div>
+        ${current[key].map(item => `
+          <div class="item">
+            <b>${categoryName[item.cat]}:</b> ${item.name}<br>
+            ${item.portion} — ${item.count} порц.
+            ${item.extra ? `<div class="small">Добавлено как свободный овощ</div>` : ""}
+            ${item.replacedFruit ? `<div class="small">Фрукт заменён на овощ, потому что это ужин</div>` : ""}
+          </div>
+        `).join("")}
       </div>
-
-    </div>
-  `;
+    `;
+  }).join("");
 }
 
-function generateDishes(){
+function getItemsByCategory(meal, cat) {
+  return meal.filter(i => i.cat === cat);
+}
 
-  if(!currentMeals.breakfast){
-    return;
+function getNames(items) {
+  return items.map(i => i.name).join(" + ");
+}
+
+function makeDishIdeas(mealType, meal) {
+  const protein = getItemsByCategory(meal, "protein");
+  const starch = getItemsByCategory(meal, "starch");
+  const dairy = getItemsByCategory(meal, "dairy");
+  const fruit = getItemsByCategory(meal, "fruit");
+  const fat = getItemsByCategory(meal, "fat");
+  const nuts = getItemsByCategory(meal, "nuts");
+  const vegetables = getItemsByCategory(meal, "vegetables");
+
+  let ideas = [];
+
+  const allAllowed = meal.filter(item => {
+    if (mealType === "dinner" && item.cat === "fruit") return false;
+    return true;
+  });
+
+  const allNames = getNames(allAllowed);
+
+  if (mealType === "breakfast") {
+    if (protein.length && starch.length) {
+      ideas.push({
+        title: "Сытная тарелка на завтрак",
+        products: allNames,
+        idea: "Приготовить белковый продукт, добавить крахмалистый продукт и подать всё одной тарелкой."
+      });
+    }
+
+    if (dairy.length && fruit.length) {
+      ideas.push({
+        title: "Творожная или йогуртовая тарелка",
+        products: allNames,
+        idea: "Смешать молочный продукт с фруктом, остальные продукты подать рядом по порции."
+      });
+    }
+
+    if (protein.length && fat.length) {
+      ideas.push({
+        title: "Белковый завтрак с жирами",
+        products: allNames,
+        idea: "Приготовить белковый продукт, а жиры использовать как добавку или гарнир."
+      });
+    }
   }
+
+  if (mealType === "lunch") {
+    if (protein.length && starch.length) {
+      ideas.push({
+        title: "Боул на обед",
+        products: allNames,
+        idea: "Приготовить протеин, добавить гарнир и овощи. Жир использовать как заправку, если он выпал."
+      });
+    }
+
+    if (protein.length && vegetables.length) {
+      ideas.push({
+        title: "Тёплая тарелка с протеином",
+        products: allNames,
+        idea: "Протеин приготовить или разогреть, овощи подать свежими или слегка потушить."
+      });
+    }
+  }
+
+  if (mealType === "snack") {
+    if (dairy.length && nuts.length) {
+      ideas.push({
+        title: "Молочный перекус с орехами",
+        products: allNames,
+        idea: "Молочный продукт подать с орехами отдельной порцией."
+      });
+    }
+
+    if (protein.length && fruit.length) {
+      ideas.push({
+        title: "Белковый перекус с фруктом",
+        products: allNames,
+        idea: "Протеин подать вместе с фруктом. Это подходит для первой половины дня."
+      });
+    }
+
+    if (starch.length && nuts.length) {
+      ideas.push({
+        title: "Хлебцы или крупа с орехами",
+        products: allNames,
+        idea: "Крахмалистый продукт подать с орехами как быстрый перекус."
+      });
+    }
+  }
+
+  if (mealType === "dinner") {
+    if (protein.length && vegetables.length) {
+      ideas.push({
+        title: "Лёгкий ужин с протеином",
+        products: allNames,
+        idea: "Приготовить протеин, овощи подать свежими или слегка потушить. Фрукты на ужин не использовать."
+      });
+    }
+
+    if (protein.length && fat.length) {
+      ideas.push({
+        title: "Белковая тарелка с заправкой",
+        products: allNames,
+        idea: "Протеин приготовить, жир использовать как заправку или добавку. Фрукты на ужин не добавлять."
+      });
+    }
+
+    if (starch.length && dairy.length) {
+      ideas.push({
+        title: "Тёплая тарелка с молочным продуктом",
+        products: allNames,
+        idea: "Крахмалистый продукт подать с молочным продуктом. При необходимости добавить овощи."
+      });
+    }
+  }
+
+  if (ideas.length === 0) {
+    ideas.push({
+      title: "Простая тарелка из выпавших продуктов",
+      products: allNames,
+      idea: "Собрать блюдо из выпавших продуктов. Если продуктов мало, добавить только разрешённые овощи."
+    });
+  }
+
+  return ideas.slice(0, 2);
+}
+
+function renderDishes() {
+  if (!current.breakfast) return;
 
   const filter = document.getElementById("dishFilter").value;
 
-  let html="";
+  const names = {
+    breakfast: "Завтрак",
+    lunch: "Обед",
+    snack: "Перекус",
+    dinner: "Ужин"
+  };
 
-  if(filter==="all" || filter==="breakfast"){
-    html += generateDish("Завтрак",currentMeals.breakfast);
-  }
+  const keys = filter === "all"
+    ? ["breakfast", "lunch", "snack", "dinner"]
+    : [filter];
 
-  if(filter==="all" || filter==="lunch"){
-    html += generateDish("Обед",currentMeals.lunch);
-  }
+  document.getElementById("dishes").innerHTML = keys.map(key => {
+    const ideas = makeDishIdeas(key, current[key]);
 
-  if(filter==="all" || filter==="snack"){
-    html += generateDish("Перекус",currentMeals.snack);
-  }
+    return `
+      <div class="card">
+        <div class="badge">${names[key]}</div>
 
-  if(filter==="all" || filter==="dinner"){
-    html += generateDish("Ужин",currentMeals.dinner);
-  }
-
-  document.getElementById("dishes").innerHTML = html;
+        ${ideas.map(dish => `
+          <div class="recipe">
+            <h3>${dish.title}</h3>
+            <p><b>Продукты:</b> ${dish.products}</p>
+            <p><b>Идея:</b> ${dish.idea}</p>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }).join("");
 }
 
-function copyMenu(){
-
-  const text = document.body.innerText;
-
-  navigator.clipboard.writeText(text);
-
+function copyMenu() {
+  navigator.clipboard.writeText(document.body.innerText);
   alert("Меню скопировано");
 }
 
+generateMenu();
 </script>
 
 </body>
